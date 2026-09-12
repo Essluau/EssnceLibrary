@@ -1,0 +1,212 @@
+-- ==============================================================================
+-- [EN]
+-- Hey! To test all interactive UI elements, check the "Visual" (ESP) tab
+-- and the built-in "Settings" tab.
+-- There you will find:
+-- 1. Checkbox / Toggle with dual color picker.
+-- 2. Action Keybind to toggle features on keyboard press.
+-- 3. Standard Single-choice Dropdown.
+-- 4. Multi-choice Dropdown (select multiple flags).
+-- 5. Decimal and Integer Sliders.
+-- 6. Standalone Color Picker row.
+-- 7. Text Input field with custom placeholder.
+-- 8. Single and Dual action buttons.
+-- 9. Player List with per-player toggles and dropdowns.
+-- ==============================================================================[span_0](start_span)[span_0](end_span)
+
+local Players = game:GetService("Players")[span_1](start_span)[span_1](end_span)
+local RunService = game:GetService("RunService")[span_2](start_span)[span_2](end_span)
+local CoreGui = game:GetService("CoreGui")[span_3](start_span)[span_3](end_span)
+local Camera = workspace.CurrentCamera[span_4](start_span)[span_4](end_span)
+local LocalPlayer = Players.LocalPlayer[span_5](start_span)[span_5](end_span)
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Essluau/EssnceLibrary/refs/heads/main/PcBuild.lua"))()
+
+local Window = Library:CreateWindow({[span_6](start_span)[span_6](end_span)
+	Name = "EssncePw",[span_7](start_span)[span_7](end_span)
+	Accent = Color3.fromHex("#CF00FF"),[span_8](start_span)[span_8](end_span)
+	ConfigFolder = "EssncePw_Configs[span_9](start_span)"[span_9](end_span)
+})
+
+local CombatTab = Window:CreateTab("Combat")[span_10](start_span)[span_10](end_span)
+
+local CombatSub1 = CombatTab:CreateSubTab({[span_11](start_span)[span_11](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/Crosshair.png",[span_12](start_span)[span_12](end_span)
+	IconFileName = "combat_1.png",[span_13](start_span)[span_13](end_span)
+	IconText = "❖",[span_14](start_span)[span_14](end_span)
+	ActiveSize = 24,[span_15](start_span)[span_15](end_span)
+	InactiveSize = 20[span_16](start_span)[span_16](end_span)
+})
+
+local CombatSub2 = CombatTab:CreateSubTab({[span_17](start_span)[span_17](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/add_moderator.png",[span_18](start_span)[span_18](end_span)
+	IconFileName = "combat_2.png",[span_19](start_span)[span_19](end_span)
+	IconText = "☁",[span_20](start_span)[span_20](end_span)
+	ActiveSize = 24,[span_21](start_span)[span_21](end_span)
+	InactiveSize = 20[span_22](start_span)[span_22](end_span)
+})
+
+local VisualTab = Window:CreateTab("Visual")[span_23](start_span)[span_23](end_span)
+
+local VisualSub1 = VisualTab:CreateSubTab({[span_24](start_span)[span_24](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/ar_on_you__.png",[span_25](start_span)[span_25](end_span)
+	IconFileName = "visuals_1.png",[span_26](start_span)[span_26](end_span)
+	IconText = "👁",[span_27](start_span)[span_27](end_span)
+	ActiveSize = 24,[span_28](start_span)[span_28](end_span)
+	InactiveSize = 20[span_29](start_span)[span_29](end_span)
+})
+
+local EspCard = VisualSub1:CreateCard("Left", "ESP Controls", 480)[span_30](start_span)[span_30](end_span)
+
+local espToggle = EspCard:AddToggle({[span_31](start_span)[span_31](end_span)
+	Name = "Box ESP",[span_32](start_span)[span_32](end_span)
+	Default = false,[span_33](start_span)[span_33](end_span)
+	Type = "dual_colorbox",[span_34](start_span)[span_34](end_span)
+	Callback = function(state)[span_35](start_span)[span_35](end_span)
+		print("Box ESP state:", state)[span_36](start_span)[span_36](end_span)
+	end
+})
+
+EspCard:AddKeybind({[span_37](start_span)[span_37](end_span)
+	Name = "ESP Keybind",[span_38](start_span)[span_38](end_span)
+	Default = Enum.KeyCode.V,[span_39](start_span)[span_39](end_span)
+	Callback = function()[span_40](start_span)[span_40](end_span)
+		espToggle.Set(not espToggle.Get())[span_41](start_span)[span_41](end_span)
+	end
+})
+
+EspCard:AddColorPicker({[span_42](start_span)[span_42](end_span)
+	Name = "Accent Override",[span_43](start_span)[span_43](end_span)
+	Default = Color3.fromRGB(207, 0, 255),[span_44](start_span)[span_44](end_span)
+	Callback = function(color)[span_45](start_span)[span_45](end_span)
+		print("Picked color:", color)[span_46](start_span)[span_46](end_span)
+	end
+})
+
+EspCard:AddSlider({[span_47](start_span)[span_47](end_span)
+	Name = "Line Thickness",[span_48](start_span)[span_48](end_span)
+	Default = 1.0,[span_49](start_span)[span_49](end_span)
+	Min = 0.5,[span_50](start_span)[span_50](end_span)
+	Max = 5.0,[span_51](start_span)[span_51](end_span)
+	Precise = 1,[span_52](start_span)[span_52](end_span)
+	Callback = function(val)[span_53](start_span)[span_53](end_span)
+		print("Thickness slider:", val)[span_54](start_span)[span_54](end_span)
+	end
+})
+
+EspCard:AddDropdown({[span_55](start_span)[span_55](end_span)
+	Name = "Box Style",[span_56](start_span)[span_56](end_span)
+	Default = "Default",[span_57](start_span)[span_57](end_span)
+	Options = {"Default", "Corner", "Rounded", "Filled"},[span_58](start_span)[span_58](end_span)
+	ZIndex = 35,[span_59](start_span)[span_59](end_span)
+	Callback = function(selected)[span_60](start_span)[span_60](end_span)
+		print("Dropdown selected:", selected)[span_61](start_span)[span_61](end_span)
+	end
+})
+
+EspCard:AddMultiDropdown({[span_62](start_span)[span_62](end_span)
+	Name = "ESP Overlays",[span_63](start_span)[span_63](end_span)
+	Default = {"Boxes", "Names"},[span_64](start_span)[span_64](end_span)
+	Options = {"Boxes", "Names", "Skeletons", "Chams", "Distance", "Health"},[span_65](start_span)[span_65](end_span)
+	ZIndex = 30,[span_66](start_span)[span_66](end_span)
+	Callback = function(selectedList)[span_67](start_span)[span_67](end_span)
+		print("MultiDropdown selected:", table.concat(selectedList, ", "))[span_68](start_span)[span_68](end_span)
+	end
+})
+
+EspCard:AddInput({[span_69](start_span)[span_69](end_span)
+	Name = "Tag Label",[span_70](start_span)[span_70](end_span)
+	Placeholder = "Enter player tag...",[span_71](start_span)[span_71](end_span)
+	Default = "Player",[span_72](start_span)[span_72](end_span)
+	Callback = function(text, enterPressed)[span_73](start_span)[span_73](end_span)
+		print("Input submitted:", text, "Enter pressed:", enterPressed)[span_74](start_span)[span_74](end_span)
+	end
+})
+
+EspCard:AddDualButtons({[span_75](start_span)[span_75](end_span)
+	Text1 = "Reset",[span_76](start_span)[span_76](end_span)
+	Callback1 = function()[span_77](start_span)[span_77](end_span)
+		print("Reset clicked")[span_78](start_span)[span_78](end_span)
+	end,
+	Text2 = "Print Stats",[span_79](start_span)[span_79](end_span)
+	Callback2 = function()[span_80](start_span)[span_80](end_span)
+		print("Print Stats clicked")[span_81](start_span)[span_81](end_span)
+	end
+})
+
+local VisualSub2 = VisualTab:CreateSubTab({[span_82](start_span)[span_82](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/brush.png",[span_83](start_span)[span_83](end_span)
+	IconFileName = "visuals_2.png",[span_84](start_span)[span_84](end_span)
+	IconText = "🎨",[span_85](start_span)[span_85](end_span)
+	ActiveSize = 24,[span_86](start_span)[span_86](end_span)
+	InactiveSize = 20[span_87](start_span)[span_87](end_span)
+})
+
+local MiscTab = Window:CreateTab("Misc")[span_88](start_span)[span_88](end_span)
+
+local MiscSub1 = MiscTab:CreateSubTab({[span_89](start_span)[span_89](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/double_arrow.png",[span_90](start_span)[span_90](end_span)
+	IconFileName = "misc_1.png",[span_91](start_span)[span_91](end_span)
+	IconText = "✦",[span_92](start_span)[span_92](end_span)
+	ActiveSize = 24,[span_93](start_span)[span_93](end_span)
+	InactiveSize = 20[span_94](start_span)[span_94](end_span)
+})
+
+local MiscSub2 = MiscTab:CreateSubTab({[span_95](start_span)[span_95](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/token_.png",[span_96](start_span)[span_96](end_span)
+	IconFileName = "misc_2.png",[span_97](start_span)[span_97](end_span)
+	IconText = "🪙",[span_98](start_span)[span_98](end_span)
+	ActiveSize = 24,[span_99](start_span)[span_99](end_span)
+	InactiveSize = 20[span_100](start_span)[span_100](end_span)
+})
+
+local SkinsTab = Window:CreateTab("Skins")[span_101](start_span)[span_101](end_span)
+
+local SkinsSub1 = SkinsTab:CreateSubTab({[span_102](start_span)[span_102](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/Karambit.png",[span_103](start_span)[span_103](end_span)
+	IconFileName = "skins_1.png",[span_104](start_span)[span_104](end_span)
+	IconText = "🗡",[span_105](start_span)[span_105](end_span)
+	ActiveSize = 30,[span_106](start_span)[span_106](end_span)
+	InactiveSize = 26[span_107](start_span)[span_107](end_span)
+})
+
+SkinsSub1:CreatePlayerList("Left", {[span_108](start_span)[span_108](end_span)
+	Title = "Player List",[span_109](start_span)[span_109](end_span)
+	SizeY = 360,[span_110](start_span)[span_110](end_span)
+	TeamFilter = "All",[span_111](start_span)[span_111](end_span)
+	Elements = {[span_112](start_span)[span_112](end_span)
+		{[span_113](start_span)[span_113](end_span)
+			type = "toggle",[span_114](start_span)[span_114](end_span)
+			name = "Aim",[span_115](start_span)[span_115](end_span)
+			default = false,[span_116](start_span)[span_116](end_span)
+			callback = function(plr, state)[span_117](start_span)[span_117](end_span)
+				print("[PlayerList] Aim for", plr.Name, ":", state)[span_118](start_span)[span_118](end_span)
+			end
+		},
+		{[span_119](start_span)[span_119](end_span)
+			type = "toggle",[span_120](start_span)[span_120](end_span)
+			name = "ESP",[span_121](start_span)[span_121](end_span)
+			default = true,[span_122](start_span)[span_122](end_span)
+			callback = function(plr, state)[span_123](start_span)[span_123](end_span)
+				print("[PlayerList] ESP for", plr.Name, ":", state)[span_124](start_span)[span_124](end_span)
+			end
+		},
+		{[span_125](start_span)[span_125](end_span)
+			type = "dropdown",[span_126](start_span)[span_126](end_span)
+			name = "Prio",[span_127](start_span)[span_127](end_span)
+			default = "Med",[span_128](start_span)[span_128](end_span)
+			options = {"Low", "Med", "High"},[span_129](start_span)[span_129](end_span)
+			callback = function(plr, selectedOption)[span_130](start_span)[span_130](end_span)
+				print("[PlayerList] Priority for", plr.Name, ":", selectedOption)[span_131](start_span)[span_131](end_span)
+			end
+		}
+	}
+})
+
+local SkinsSub2 = SkinsTab:CreateSubTab({[span_132](start_span)[span_132](end_span)
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/open_with_%202.png",[span_133](start_span)[span_133](end_span)
+	IconFileName = "skins_2.png",[span_134](start_span)[span_134](end_span)
+	IconText = "🔄",[span_135](start_span)[span_135](end_span)
+	ActiveSize = 24,[span_136](start_span)[span_136](end_span)
+	InactiveSize = 20[span_137](start_span)[span_137](end_span)
+})
