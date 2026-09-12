@@ -1,0 +1,212 @@
+-- ==============================================================================
+-- [EN]
+-- Hey! To test all interactive UI elements, check the "Visual" (ESP) tab
+-- and the built-in "Settings" tab.
+-- There you will find:
+-- 1. Checkbox / Toggle with dual color picker.
+-- 2. Action Keybind to toggle features on keyboard press.
+-- 3. Standard Single-choice Dropdown.
+-- 4. Multi-choice Dropdown (select multiple flags).
+-- 5. Decimal and Integer Sliders.
+-- 6. Standalone Color Picker row.
+-- 7. Text Input field with custom placeholder.
+-- 8. Single and Dual action buttons.
+-- 9. Player List with per-player toggles and dropdowns.
+-- ==============================================================================
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Essluau/EssnceLibrary/refs/heads/main/EssncePcBuild.lua"))()
+
+local Window = Library:CreateWindow({
+	Name = "EssncePw",
+	Accent = Color3.fromHex("#CF00FF"),
+	ConfigFolder = "EssncePw_Configs"
+})
+
+local CombatTab = Window:CreateTab("Combat")
+
+local CombatSub1 = CombatTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/Crosshair.png",
+	IconFileName = "combat_1.png",
+	IconText = "❖",
+	ActiveSize = 24,
+	InactiveSize = 20
+})
+
+local CombatSub2 = CombatTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/add_moderator.png",
+	IconFileName = "combat_2.png",
+	IconText = "☁",
+	ActiveSize = 24,
+	InactiveSize = 20
+})
+
+local VisualTab = Window:CreateTab("Visual")
+
+local VisualSub1 = VisualTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/ar_on_you__.png",
+	IconFileName = "visuals_1.png",
+	IconText = "👁",
+	ActiveSize = 24,
+	InactiveSize = 20
+})
+
+local EspCard = VisualSub1:CreateCard("Left", "ESP Controls", 480)
+
+local espToggle = EspCard:AddToggle({
+	Name = "Box ESP",
+	Default = false,
+	Type = "dual_colorbox",
+	Callback = function(state)
+		print("Box ESP state:", state)
+	end
+})
+
+EspCard:AddKeybind({
+	Name = "ESP Keybind",
+	Default = Enum.KeyCode.V,
+	Callback = function()
+		espToggle.Set(not espToggle.Get())
+	end
+})
+
+EspCard:AddColorPicker({
+	Name = "Accent Override",
+	Default = Color3.fromRGB(207, 0, 255),
+	Callback = function(color)
+		print("Picked color:", color)
+	end
+})
+
+EspCard:AddSlider({
+	Name = "Line Thickness",
+	Default = 1.0,
+	Min = 0.5,
+	Max = 5.0,
+	Precise = 1,
+	Callback = function(val)
+		print("Thickness slider:", val)
+	end
+})
+
+EspCard:AddDropdown({
+	Name = "Box Style",
+	Default = "Default",
+	Options = {"Default", "Corner", "Rounded", "Filled"},
+	ZIndex = 35,
+	Callback = function(selected)
+		print("Dropdown selected:", selected)
+	end
+})
+
+EspCard:AddMultiDropdown({
+	Name = "ESP Overlays",
+	Default = {"Boxes", "Names"},
+	Options = {"Boxes", "Names", "Skeletons", "Chams", "Distance", "Health"},
+	ZIndex = 30,
+	Callback = function(selectedList)
+		print("MultiDropdown selected:", table.concat(selectedList, ", "))
+	end
+})
+
+EspCard:AddInput({
+	Name = "Tag Label",
+	Placeholder = "Enter player tag...",
+	Default = "Player",
+	Callback = function(text, enterPressed)
+		print("Input submitted:", text, "Enter pressed:", enterPressed)
+	end
+})
+
+EspCard:AddDualButtons({
+	Text1 = "Reset",
+	Callback1 = function()
+		print("Reset clicked")
+	end,
+	Text2 = "Print Stats",
+	Callback2 = function()
+		print("Print Stats clicked")
+	end
+})
+
+local VisualSub2 = VisualTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/brush.png",
+	IconFileName = "visuals_2.png",
+	IconText = "🎨",
+	ActiveSize = 24,
+	InactiveSize = 20
+})
+
+local MiscTab = Window:CreateTab("Misc")
+
+local MiscSub1 = MiscTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/double_arrow.png",
+	IconFileName = "misc_1.png",
+	IconText = "✦",
+	ActiveSize = 24,
+	InactiveSize = 20
+})
+
+local MiscSub2 = MiscTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/token_.png",
+	IconFileName = "misc_2.png",
+	IconText = "🪙",
+	ActiveSize = 24,
+	InactiveSize = 20
+})
+
+local SkinsTab = Window:CreateTab("Skins")
+
+local SkinsSub1 = SkinsTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/Karambit.png",
+	IconFileName = "skins_1.png",
+	IconText = "🗡",
+	ActiveSize = 30,
+	InactiveSize = 26
+})
+
+SkinsSub1:CreatePlayerList("Left", {
+	Title = "Player List",
+	SizeY = 360,
+	TeamFilter = "All",
+	Elements = {
+		{
+			type = "toggle",
+			name = "Aim",
+			default = false,
+			callback = function(plr, state)
+				print("[PlayerList] Aim for", plr.Name, ":", state)
+			end
+		},
+		{
+			type = "toggle",
+			name = "ESP",
+			default = true,
+			callback = function(plr, state)
+				print("[PlayerList] ESP for", plr.Name, ":", state)
+			end
+		},
+		{
+			type = "dropdown",
+			name = "Prio",
+			default = "Med",
+			options = {"Low", "Med", "High"},
+			callback = function(plr, selectedOption)
+				print("[PlayerList] Priority for", plr.Name, ":", selectedOption)
+			end
+		}
+	}
+})
+
+local SkinsSub2 = SkinsTab:CreateSubTab({
+	Icon = "https://raw.githubusercontent.com/Essluau/icons/refs/heads/main/open_with_%202.png",
+	IconFileName = "skins_2.png",
+	IconText = "🔄",
+	ActiveSize = 24,
+	InactiveSize = 20
+})
